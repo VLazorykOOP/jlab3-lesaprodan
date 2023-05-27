@@ -96,3 +96,121 @@ public class lab3 {
         }
     }
 }
+
+import java.util.Scanner;
+
+abstract class Series {
+    protected double firstTerm;
+    protected double commonDifferenceOrRatio;
+
+    public abstract double getNthTerm(int n);
+    public abstract double getSum(int n);
+}
+
+class Linear extends Series {
+    public Linear(double firstTerm, double commonDifference) {
+        this.firstTerm = firstTerm;
+        this.commonDifferenceOrRatio = commonDifference;
+    }
+    
+    @Override
+    public double getNthTerm(int n) {
+        return firstTerm + (n - 1) * commonDifferenceOrRatio;
+    }
+    
+    @Override
+    public double getSum(int n) {
+        return (n / 2.0) * (2 * firstTerm + (n - 1) * commonDifferenceOrRatio);
+    }
+    
+    @Override
+    public String toString() {
+        return "Linear series: first term = " + firstTerm + ", common difference = " + commonDifferenceOrRatio;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        Linear other = (Linear) obj;
+        return Double.compare(other.firstTerm, firstTerm) == 0 && 
+               Double.compare(other.commonDifferenceOrRatio, commonDifferenceOrRatio) == 0;
+    }
+}
+
+class Exponential extends Series {
+    public Exponential(double firstTerm, double commonRatio) {
+        this.firstTerm = firstTerm;
+        this.commonDifferenceOrRatio = commonRatio;
+    }
+    
+    @Override
+    public double getNthTerm(int n) {
+        return firstTerm * Math.pow(commonDifferenceOrRatio, n - 1);
+    }
+    
+    @Override
+    public double getSum(int n) {
+        if (commonDifferenceOrRatio == 1) {
+            return n * firstTerm;
+        } else {
+            return firstTerm * (Math.pow(commonDifferenceOrRatio, n) - 1) / (commonDifferenceOrRatio - 1);
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return "Exponential series: first term = " + firstTerm + ", common ratio = " + commonDifferenceOrRatio;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        Exponential other = (Exponential) obj;
+        return Double.compare(other.firstTerm, firstTerm) == 0 && 
+               Double.compare(other.commonDifferenceOrRatio, commonDifferenceOrRatio) == 0;
+    }
+}
+
+public class lab32 {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Enter the first term:");
+        double firstTerm = scanner.nextDouble();
+        
+        System.out.println("Enter the common difference (for linear series) or common ratio (for exponential series):");
+        double commonDifferenceOrRatio = scanner.nextDouble();
+        
+        Series[] seriesArray = new Series[2];
+        
+        seriesArray[0] = new Linear(firstTerm, commonDifferenceOrRatio);
+        seriesArray[1] = new Exponential(firstTerm, commonDifferenceOrRatio);
+        
+        for (Series series : seriesArray) {
+            System.out.println(series.toString());
+            System.out.println("Enter the value of n:");
+            int n = scanner.nextInt();
+            
+            System.out.println("Nth term: " + series.getNthTerm(n));
+            System.out.println("Sum of the first " + n + " terms: " + series.getSum(n));
+            System.out.println();
+        }
+        
+        scanner.close();
+    }
+}
+
